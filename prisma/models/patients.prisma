@@ -1,0 +1,19 @@
+model Patient {
+  id               Int       @id @default(autoincrement())
+  emrNumber        String?   @map("emr_number") @db.VarChar(100)
+  patientName      String    @map("patient_name") @db.VarChar(255)
+  patientType      String?   @map("patient_type") @db.VarChar(100)
+  dateAdded        DateTime? @map("date_added") @db.Date
+  primaryClinician String?   @map("primary_clinician") @db.VarChar(255)
+  address          String?   @db.Text
+  city             String?   @db.VarChar(100)
+  state            String?   @db.VarChar(50)
+  zip              String?   @db.VarChar(20)
+  phoneNumber      String?   @map("phone_number") @db.VarChar(50)
+  email            String?   @db.VarChar(255)
+  primaryInsurance String?   @map("primary_insurance") @db.Text
+  insuranceId      String?   @map("insurance_id") @db.VarChar(100)
+  status           String?   @db.VarChar(50)
+
+  @@map("patients")
+}
