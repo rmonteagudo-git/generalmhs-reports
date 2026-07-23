@@ -73,6 +73,7 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const PatientScalarFieldEnum = {
   id: 'id',
+  emrNumber: 'emrNumber',
   patientName: 'patientName',
   patientType: 'patientType',
   dateAdded: 'dateAdded',
@@ -120,6 +121,7 @@ export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 export const PatientOrderByRelevanceFieldEnum = {
+  emrNumber: 'emrNumber',
   patientName: 'patientName',
   patientType: 'patientType',
   primaryClinician: 'primaryClinician',
