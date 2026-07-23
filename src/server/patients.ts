@@ -84,9 +84,53 @@ function buildWhere(filters: PatientFilters): Prisma.PatientWhereInput {
   return where;
 }
 
-export async function listPatients(filters: PatientFilters = {}) {
-  return prisma.patient.findMany({
-    where: buildWhere(filters),
+export const PATIENTS_PAGE_SIZE = 20;
+
+export async function listPatients(
+  filters: PatientFilters = {},
+  page = 1,
+  pageSize = PATIENTS_PAGE_SIZE,
+) {
+  const where = buildWhere(filters);
+  const total = await prisma.patient.count({ where });
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+  const skip = (currentPage - 1) * pageSize;
+
+  const patients = await prisma.patient.findMany({
+    where,
     orderBy: [{ patientName: "asc" }, { id: "asc" }],
+    skip,
+    take: pageSize,
+  });
+
+  return {
+    patients,
+    total,
+    page: currentPage,
+    pageSize,
+    totalPages,
+  };
+}
+
+export type PatientOption = {
+  id: number;
+  patientName: string;
+};
+
+export async function listPatientOptions(): Promise<PatientOption[]> {
+  return prisma.patient.findMany({
+    select: { id: true, patientName: true },
+    orderBy: [{ patientName: "asc" }, { id: "asc" }],
+  });
+}
+
+export async function updatePatientEmrNumber(
+  patientId: number,
+  emrNumber: string,
+) {
+  return prisma.patient.update({
+    where: { id: patientId },
+    data: { emrNumber },
   });
 }
