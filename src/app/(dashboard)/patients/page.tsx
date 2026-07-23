@@ -1,7 +1,10 @@
 import { PatientsFilters } from "@/components/patients/patients-filters";
+import { PatientsPagination } from "@/components/patients/patients-pagination";
 import { PatientsTable } from "@/components/patients/patients-table";
 import {
+  listPatientOptions,
   listPatients,
+  PATIENTS_PAGE_SIZE,
   type PatientFilters,
 } from "@/server/patients";
 
@@ -35,6 +38,15 @@ function filtersFromSearchParams(
   };
 }
 
+function pageFromSearchParams(
+  params: Record<string, string | string[] | undefined>,
+) {
+  const raw = pickFilter(params.page);
+  const page = Number(raw);
+  if (!raw || Number.isNaN(page) || page < 1) return 1;
+  return Math.floor(page);
+}
+
 export default async function PatientsPage({
   searchParams,
 }: {
@@ -42,7 +54,12 @@ export default async function PatientsPage({
 }) {
   const params = await searchParams;
   const filters = filtersFromSearchParams(params);
-  const patients = await listPatients(filters);
+  const page = pageFromSearchParams(params);
+  const [{ patients, total, page: currentPage, totalPages, pageSize }, patientOptions] =
+    await Promise.all([
+      listPatients(filters, page, PATIENTS_PAGE_SIZE),
+      listPatientOptions(),
+    ]);
 
   return (
     <main className="flex flex-1 flex-col gap-6 p-6 md:p-8">
@@ -53,13 +70,20 @@ export default async function PatientsPage({
         </p>
       </div>
 
-      <PatientsFilters filters={filters} />
+      <PatientsFilters filters={filters} patientOptions={patientOptions} />
 
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
-          {patients.length} patient{patients.length === 1 ? "" : "s"}
+          {total} patient{total === 1 ? "" : "s"}
         </p>
         <PatientsTable patients={patients} />
+        <PatientsPagination
+          filters={filters}
+          page={currentPage}
+          totalPages={totalPages}
+          total={total}
+          pageSize={pageSize}
+        />
       </div>
     </main>
   );
