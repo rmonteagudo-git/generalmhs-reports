@@ -51,6 +51,7 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Attendance: 'Attendance',
   Patient: 'Patient',
   User: 'User'
 } as const
@@ -69,6 +70,18 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const AttendanceScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  dateOfService: 'dateOfService',
+  location: 'location',
+  clinicianName: 'clinicianName',
+  status: 'status'
+} as const
+
+export type AttendanceScalarFieldEnum = (typeof AttendanceScalarFieldEnum)[keyof typeof AttendanceScalarFieldEnum]
 
 
 export const PatientScalarFieldEnum = {
@@ -118,6 +131,14 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const AttendanceOrderByRelevanceFieldEnum = {
+  location: 'location',
+  clinicianName: 'clinicianName'
+} as const
+
+export type AttendanceOrderByRelevanceFieldEnum = (typeof AttendanceOrderByRelevanceFieldEnum)[keyof typeof AttendanceOrderByRelevanceFieldEnum]
 
 
 export const PatientOrderByRelevanceFieldEnum = {

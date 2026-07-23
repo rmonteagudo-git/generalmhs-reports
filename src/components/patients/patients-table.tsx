@@ -9,6 +9,7 @@ import {
 
 type PatientRow = {
   id: number;
+  emrNumber: string | null;
   patientName: string;
   patientType: string | null;
   dateAdded: Date | null;
@@ -46,6 +47,7 @@ export function PatientsTable({ patients }: { patients: PatientRow[] }) {
         <TableHeader>
           <TableRow>
             <TableHead>ID</TableHead>
+            <TableHead>EMR number</TableHead>
             <TableHead>Patient name</TableHead>
             <TableHead>Patient type</TableHead>
             <TableHead>Date added</TableHead>
@@ -64,7 +66,7 @@ export function PatientsTable({ patients }: { patients: PatientRow[] }) {
         <TableBody>
           {patients.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={14} className="h-24 text-center text-muted-foreground">
+              <TableCell colSpan={15} className="h-24 text-center text-muted-foreground">
                 No patients found.
               </TableCell>
             </TableRow>
@@ -72,6 +74,7 @@ export function PatientsTable({ patients }: { patients: PatientRow[] }) {
             patients.map((patient) => (
               <TableRow key={patient.id}>
                 <TableCell>{patient.id}</TableCell>
+                <TableCell>{cell(patient.emrNumber)}</TableCell>
                 <TableCell className="max-w-[220px] truncate font-medium">
                   {cell(patient.patientName)}
                 </TableCell>

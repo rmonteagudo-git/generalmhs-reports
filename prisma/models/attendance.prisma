@@ -1,0 +1,23 @@
+enum AttendanceStatus {
+  SHOW
+  NO_SHOW
+  CANCELED
+  LATE_CANCELED
+  CLINICIAN_CANCELED
+
+  @@map("attendance_status")
+}
+
+model Attendance {
+  id            Int              @id @default(autoincrement())
+  patientId     Int              @map("patient_id")
+  dateOfService DateTime         @map("date_of_service") @db.Date
+  location      String?          @db.VarChar(255)
+  clinicianName String?          @map("clinician_name") @db.VarChar(255)
+  status        AttendanceStatus
+
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId])
+  @@map("attendance")
+}

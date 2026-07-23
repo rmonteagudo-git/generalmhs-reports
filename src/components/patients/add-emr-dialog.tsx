@@ -29,16 +29,19 @@ import type { PatientOption } from "@/server/patients";
 export function AddEmrDialog({ patients }: { patients: PatientOption[] }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [selectedPatient, setSelectedPatient] = useState<PatientOption | null>(
+  const [selectedPatientId, setSelectedPatientId] = useState<number | null>(
     null,
   );
   const [emrNumber, setEmrNumber] = useState("");
   const [error, setError] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
 
+  const selectedPatient =
+    patients.find((patient) => patient.id === selectedPatientId) ?? null;
+
   useEffect(() => {
     if (!open) {
-      setSelectedPatient(null);
+      setSelectedPatientId(null);
       setEmrNumber("");
       setError(undefined);
     }
@@ -49,8 +52,8 @@ export function AddEmrDialog({ patients }: { patients: PatientOption[] }) {
     setError(undefined);
 
     const formData = new FormData();
-    if (selectedPatient) {
-      formData.set("patientId", String(selectedPatient.id));
+    if (selectedPatientId != null) {
+      formData.set("patientId", String(selectedPatientId));
     }
     formData.set("emrNumber", emrNumber);
 
@@ -88,9 +91,12 @@ export function AddEmrDialog({ patients }: { patients: PatientOption[] }) {
                 items={patients}
                 value={selectedPatient}
                 onValueChange={(value) =>
-                  setSelectedPatient((value as PatientOption | null) ?? null)
+                  setSelectedPatientId(
+                    (value as PatientOption | null)?.id ?? null,
+                  )
                 }
-                itemToStringValue={(patient) => patient.patientName}
+                itemToStringLabel={(patient) => patient.patientName}
+                isItemEqualToValue={(a, b) => a.id === b.id}
                 modal={false}
               >
                 <ComboboxInput
@@ -103,7 +109,7 @@ export function AddEmrDialog({ patients }: { patients: PatientOption[] }) {
                   <ComboboxEmpty>No patients found.</ComboboxEmpty>
                   <ComboboxList>
                     {(patient) => (
-                      <ComboboxItem key={patient.id} value={patient.patientName}>
+                      <ComboboxItem key={patient.id} value={patient}>
                         {patient.patientName}
                       </ComboboxItem>
                     )}

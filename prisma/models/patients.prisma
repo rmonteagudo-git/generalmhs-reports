@@ -15,5 +15,7 @@ model Patient {
   insuranceId      String?   @map("insurance_id") @db.VarChar(100)
   status           String?   @db.VarChar(50)
 
+  attendances Attendance[]
+
   @@map("patients")
 }
